@@ -30,3 +30,12 @@ export function getRandomSpiritAnimal() {
 
     return  `${animals[Math.floor(Math.random() * animals.length)]}`;   
 };
+
+/**
+ * This function will return the age of a pet, need the dob date of bith to operate.
+ * @param {in a date format the date of birth of an animal} dob 
+ */
+function getAge(dob) {
+    let presentDate = new Date();
+    return Math.floor( (dob - presentDate) / (1000 * 60 * 60 * 24 * 365.25));
+};
