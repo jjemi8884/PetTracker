@@ -1,0 +1,12 @@
+.petAreaForm{
+    display:grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    grid-template-rows: .25fr 3fr;
+}
+
+.buttonArea{
+    display: flex;
+    justify-content: space-around;
+    height: 40px;
+    grid-column: 1 / 4;
+}

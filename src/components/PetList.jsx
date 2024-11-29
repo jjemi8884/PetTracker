@@ -10,21 +10,15 @@
 import React  from "react";
 import PropTypes from "prop-types";
 import PetNameList from "./PetNameList";
-// import fbApp from "../firebase";
-// import { getAuth, onAuthStateChaged, signInWithPopup, signOut} from "firebase/auth";
-// import Login from "./Login";
-// import {GithubAuthProvider} from "firebase/auth";
-// import 
 
-//start the firebase application
-//const auth = getAuth(fbApp);
 
 //going to need to have pets, 
-function PetList ({pets, currentPet})  {
+export default function PetList ({pets, currentPet})  {
 
     return (
         <div className="sideBar">
             <h3>Companion Names </h3>
+            {pets.length === 0 && "No Pets listed"}
             <ul className="petFirstList">
                 {Object.keys(pets).map((key) => (
                     <PetNameList
@@ -43,4 +37,4 @@ PetList.propTypes = {
     currentPet: PropTypes.func 
 }
 
-export default PetList;
+

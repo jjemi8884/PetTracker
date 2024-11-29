@@ -12,7 +12,7 @@ const Router = () => (
   <BrowserRouter>
     <Routes>
       <Route path="/" element={<LandingPage />} />
-      <Route path="/userID/:loginID" element={<App />} />
+      <Route path="/userID/:spiritPet" element={<App />} />
       <Route path="*" element={<NotValidUser />} />
     </Routes>
   </BrowserRouter>

@@ -5,68 +5,63 @@
  * THis container will render the pet area for displaying the pets and also will hold the login funciton for authenication that
  * will be passes the methods from App to use for authentication. 
 */
-import React, {useState, useEffect} from "react";
-import PropTypes from "prop-types";
-import Pet from "./Pet";
-import { getDatabase, ref, get, set } from "firebase/database";
-import { firebaseApp } from "../firebase";
+import React from "react";
+import PetForm from "./PetForm";
+import "../css/petArea.css";
 
+export default function PetArea ({petDisplayed, addToPets, updatePets, deleteAPets})  {
 
+    function updatePet (target) {
+        
+        const pet = {
+            "petName" : target.petName,
+            "dob" : target.dob,
+            "gender" : target.gender
+        };
+        updatePets(petDisplayed.petId, pet);
+        console.log("Updated pet");
+    }
 
-// const auth = getAuth(firebaseApp);
-// const database = getDatabase(firebaseApp);
+    function addNewPet(target) {
+        const pet = {
+            "petId" : crypto.randomUUID(),
+            "petName" : target.petName.value,
+            "gender" : target.gender.value,
+            "dob" : target.dob.value
+        };
 
+        addToPets(pet);
+        console.log("Added new pet to the list");
+    }
 
-
-export default function PetArea (petSelected, addPet, updatePet, accountName)  => {
-
-    // const [useId, setUdi] = useState(null);
-    // const [owner, setOwner] = useState(null);
-
-    //usetEffect for checking authentication state on page load or refresh
-    // useEffect(() => {
-    //     const unsubscribe = onAuthStateChange(auth, (user) => {
-    //         if(user) {
-    //             authHandler({ user });
-    //         }
-    //     });
-    //     return () => unsubscribe();
-    // }, [])
-
-    // // Check for user ID in local storage and authenticate
-    // useEffect(() => {
-    //     const storedUid = localStroage.getItem("uid");
-    //     if(sotredUid) {
-    //         authHandler({ user: {uid: storedUid }});
-    //     }
-
-    //     const unsubscribe = onAuthStateChanged(auth, (user) => {
-    //         if (user) {
-    //             authHandler({ user });
-    //         }
-    //     });
-    //     return () => unsubscribe();
-    // }, []);
-
-    // const authHandler = async (authData) => {
-    //     const storeRef = ref(database, userID)
-    // }
-   return (
-    <petFrom 
-        petSelected={petSelected}
-        addPet={addPet}
-        updatePet={updatePet}
-    />    
-   )
+    function deletePet() {
+        deleteAPets(petDisplayed.petId);
+        console.log("pet Deleted");
+    }
     
+    return (
+        <>
+        <form className="petAreaForm">
+            <div className="buttonArea">
+            <button onClick={() => addNewPet()}>Add Compainion</button>
+            <button onClick={() => updatePet()}>Update Companion</button>
+            <button onClick={() => deletePet()}>Delete Companion</button>
+            {()=> {
+                if(petDisplayed) {
+                    <div className="petDisplayed">
+                        <p>{petDisplayed.petName}</p>
+                        <p>{petDisplayed.age}</p>
+                        <p>{petDisplayed.gender}</p>
+                    </div>
+                } else{
+                    <p>No pet Selected</p>
+                }           
+            }}
+            </div>
+        </form>
+        </>
+    )
+
     
 }
 
-PetArea.propTypes={
-    petSelected: PropTypes.object,
-    addPet: PropTypes.func,
-    updatePet: PropTypes.func
-}
-
-
-export default PetArea;
