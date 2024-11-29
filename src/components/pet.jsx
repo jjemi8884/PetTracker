@@ -9,6 +9,7 @@
  */
 import React from "react";
 import PropTypes from "prop-types";
+import {getAge} from "../helpers";
 
 
 class pet extends React.Component {
@@ -40,9 +41,11 @@ class pet extends React.Component {
      
 
         return (
-        <p>Name: {this.props.details.petName}</p>
-        <p>Age: </p></>
-
+        <div className="petDetails">
+            <p>Name: {this.props.details.petName}</p>
+            <p>Gender: {this.props.details.gender}</p>
+            <p>BirthDate: {getAge(this.props.details.dob)}</p>
+        </div>
     )}
 
 }

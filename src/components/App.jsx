@@ -6,10 +6,34 @@ import Footer from "./Footer";
 import PetArea from "./PetArea";
 import PropTypes from "prop-types";
 import '../css/App.css';
+import { useParams } from "react-router-dom";
 
 function App() {
+  const { spiritPet } = useParams();
   const [pets, setPets] = useState([])
   const [petSelected, setpetSelected] = useState();
+
+  useEffect(() => {
+    if(!spiritPet) {
+      console.error("O wow you do not have a spirit animal");
+      return;
+    }
+
+    const localStoreageRef = localStorage.getItem(spiritPet);
+    if(localStoreageRef) {
+      setPets(JSON.parse(localStoreageRef));
+    }
+
+    const petTrackerRef = ref(database, `${spiritPet}/pets`);
+
+    onValue(petTrackerRef, (snapshot) => {
+      const data = snapshot.val() || {}; 
+      console.log("Got the pets from the database", data);
+      setPets(data);
+    });
+
+    return () => {}
+  }, [spiritPet]);
 
   /**
    * Function to update the pets list for the user.
@@ -45,8 +69,8 @@ function App() {
     <Header />
     <main>
     <PetList 
-    currentPet={currentPet}
-    pets={pets}
+      currentPet={currentPet}
+      pets={pets}
     />
     <PetArea 
       updatePet ={updatePet}

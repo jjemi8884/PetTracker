@@ -19,11 +19,11 @@ const Login = () => {
   const navigate = useNavigate();
 
   const loadPetTracker = (event) => {
-    const animal = spirit.current.value;
+    const spiritPet = spirit.current.value;
 
    
     event.preventDefault();
-    navigate(`/userID/${animal}`);
+    navigate(`/userID/${spiritPet}`);
   };
 
   return (
