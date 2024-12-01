@@ -58,6 +58,8 @@ button {
   background-color: #1a1a1a;
   cursor: pointer;
   transition: border-color 0.25s;
+  margin-top: 5px;
+ 
 }
 button:hover {
   color: #9494ec;
@@ -86,6 +88,35 @@ header.head > p:hover {
 .sideBar {
   background-color: rgb(147, 110, 174);
   height:100svh;
+  grid-row: 1 / 4;
+}
+
+.petForm {
+  grid-column: 2 / 3;
+  grid-row: 2 / 3;
+  width: 80%;
+  justify-self: center;
+}
+
+.petForm > input {
+  width: 30%;
+}
+
+.noBullets{ 
+  list-style-type: none;
+  padding: 0;
+  margin: 0;
+}
+
+.selected{
+  color: rgb(77, 234, 41);
+}
+
+.PetInfo {
+  text-align: left;
+  margin-left: 10px;
+  font-size: larger; 
+  color: black
 }
 
 

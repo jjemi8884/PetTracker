@@ -4,21 +4,29 @@
  * current pet.
  * 
  */
-import React from "react";
+import React, { useState } from "react";
 import PropTypes from "prop-types";
+import "../css/index.css";
 
-function PetNameList({key, petName, currentPet }) {
+function PetNameList({ id, name, currentPet, currentPetInfo}) {
+
     return (
-        <li>
-            <p onClick={currentPet(key)}>{petName}</p>
+        <li id="listPet" className="petNames">
+            <p 
+                onClick={()=> currentPet(id)}
+                style = {{color: (currentPetInfo && name === currentPetInfo.name) ?  "rgb(77, 234, 41)":"rgba(247, 248, 243, 0.87)"}}
+            >
+                {name}
+            </p>
         </li>
     )
 }
 
-PetNameList.propTypes -{
-    key: PropTypes.number,
-    petName: PropTypes.string,
-    currentPet: PropTypes.func
+PetNameList.propTypes ={
+    id: PropTypes.string,
+    name: PropTypes.string,
+    currentPet: PropTypes.func,
+    currentPetInfo: PropTypes.object
 }
 
 export default PetNameList;

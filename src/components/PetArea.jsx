@@ -5,63 +5,87 @@
  * THis container will render the pet area for displaying the pets and also will hold the login funciton for authenication that
  * will be passes the methods from App to use for authentication. 
 */
-import React from "react";
+import React,{useState} from "react";
 import PetForm from "./PetForm";
 import "../css/petArea.css";
+import PropTypes from "prop-types";
+import Pet from "./Pet"
+import { createPets } from "../fakePets";
 
-export default function PetArea ({petDisplayed, addToPets, updatePets, deleteAPets})  {
 
-    function updatePet (target) {
+export default function PetArea ({pets, currentPetInfo, updatePets, deleteAPet, fakePets, currentPet})  {
+
+    PetArea.propTypes ={
+        currentPet: PropTypes.func,
+        currentPetInfo : PropTypes.object,
+        pets: PropTypes.object,
+        updatePets: PropTypes.func,
+        deleteAPets: PropTypes.func,
+        fakePets: PropTypes.func
+      }
+
+    const[showForm , setShowForm] = useState(false);
+    
+
         
-        const pet = {
-            "petName" : target.petName,
-            "dob" : target.dob,
-            "gender" : target.gender
-        };
-        updatePets(petDisplayed.petId, pet);
-        console.log("Updated pet");
-    }
-
-    function addNewPet(target) {
-        const pet = {
-            "petId" : crypto.randomUUID(),
-            "petName" : target.petName.value,
-            "gender" : target.gender.value,
-            "dob" : target.dob.value
-        };
-
-        addToPets(pet);
-        console.log("Added new pet to the list");
-    }
-
-    function deletePet() {
-        deleteAPets(petDisplayed.petId);
-        console.log("pet Deleted");
+    function toggleShowForm() {
+        if(showForm){
+            setShowForm(false);
+        }else{
+            setShowForm(true);
+        }
     }
     
+    function updateAPet() {
+        toggleShowForm();
+    }
+    
+    /***
+     * really on seting the id to zero and removing the info form the display
+    */
+   function addAPet() {
+       toggleShowForm();
+       currentPet(null);
+    }
+    
+    function deletePet() {
+        if(currentPetInfo){
+
+            console.log("pet Deleted");
+            deleteAPet(currentPetInfo.id);
+        }
+    }
+
+    function fakePetsGen() {
+        const newPets = createPets();
+        fakePets(newPets);
+    }
+
     return (
         <>
-        <form className="petAreaForm">
+        <div className="petAreaForm">
             <div className="buttonArea">
-            <button onClick={() => addNewPet()}>Add Compainion</button>
-            <button onClick={() => updatePet()}>Update Companion</button>
-            <button onClick={() => deletePet()}>Delete Companion</button>
-            {()=> {
-                if(petDisplayed) {
-                    <div className="petDisplayed">
-                        <p>{petDisplayed.petName}</p>
-                        <p>{petDisplayed.age}</p>
-                        <p>{petDisplayed.gender}</p>
-                    </div>
-                } else{
-                    <p>No pet Selected</p>
-                }           
-            }}
+                <button onClick={addAPet} value="Add a new Pet">Add Compainion</button>
+                <button onClick={updateAPet} value="Update your Pet">Update Companion</button>
+                <button onClick={deletePet} value="Remove Pet Information from System">Delete Companion</button>
+                <button onClick={fakePetsGen}>Generate Some Fake Pets</button>
             </div>
-        </form>
+            <div className="petDisplayed">
+                <strong>Current Selected Pet</strong>
+                {currentPetInfo && <Pet 
+                  currentPetInfo= {currentPetInfo}
+                />}
+            </div>
+       </div>
+        {showForm && <PetForm 
+            currentPetInfo={currentPetInfo}
+            updatePets={updatePets}
+    
+        />}
         </>
     )
 
+  
     
 }
 

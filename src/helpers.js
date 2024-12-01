@@ -36,6 +36,10 @@ export function getRandomSpiritAnimal() {
  * @param {in a date format the date of birth of an animal} dob 
  */
 export function getAge(dob) {
-    let presentDate = new Date();
-    return Math.floor( (dob - presentDate) / (1000 * 60 * 60 * 24 * 365.25));
+    const now = new Date().getFullYear();
+    const bDate = new Date(dob).getFullYear();
+   
+  
+ 
+    return Math.floor(now - bDate);
 };
