@@ -1,4 +1,10 @@
-
+/**
+ * Justin Jemison
+ * 12/1/2024
+ * 
+ * The landing page that will accept a user ID form Getup and then link that ID 
+ * to the rest of they tracker by using this router to do that!
+ */
 
 
 import React from "react";
@@ -12,7 +18,7 @@ const Router = () => (
   <BrowserRouter>
     <Routes>
       <Route path="/" element={<LandingPage />} />
-      <Route path="/userID/:spiritPet" element={<App />} />
+      <Route path="/userID/:loginInfo" element={<App />} />
       <Route path="*" element={<NotValidUser />} />
     </Routes>
   </BrowserRouter>

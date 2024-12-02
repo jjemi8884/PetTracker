@@ -7,13 +7,26 @@
  *
  */
 
-import React from "react";
+import React from "react"
+import PropTypes from "prop-types";
 
-const Header = () => (
+
+const Header = ({loginName, logout}) => (
+
+  
     <header className="head">
         <button>Futrue products</button>
-        <p>loginInfo</p>
+        <h1>Pet Information Tracker</h1>
+        <div className="loging">
+            <p>Loggin in as: {loginName}</p>
+            <button onClick={logout} >logout</button>
+        </div>
     </header>
 )
+
+Header.propTypes ={
+    loginName: PropTypes.string,
+    logout: PropTypes.func
+}
 
 export default Header;

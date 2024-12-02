@@ -8,42 +8,95 @@ import PropTypes from "prop-types";
 import '../css/App.css';
 import { useParams } from "react-router-dom";
 import { createPets } from "../fakePets";
-//import { getDatabase, ref, onValue, set } from "firebase/database";
-//import { database } from "../firebase"; //your firebase setup
+import { getAuth, signOut } from "firebase/auth";
+import {  ref, onValue, set } from "firebase/database";
+import { database, fbApp } from "../firebase"; //your firebase setup
+import { useNavigate } from "react-router-dom";
 
 function App() {
-  const { spiritPet } = useParams();
+  const { loginInfo } = useParams();
   const [pets, setPets] = useState({});
-  const [currentPetInfo, setcurrentPetInfo] = useState({});
+  const [currentPetInfo, setcurrentPetInfo] = useState(storageFetch);
+  const [loginName, setLoginName] = useState();
+  
+  const navigate = useNavigate();
 
-  useEffect(() => {
-    if(!spiritPet) {
+  
+
+  /**
+   * This is for if we wanted to store stuff local instead of firebase
+   * we would put this function in the useState 
+   * @returns the local storage items if there are any for the current selected pet state!
+   */
+  function storageFetch(){
+    if(!loginInfo) {
       console.error("O wow you do not have a spirit animal");
       return;
     }
 
-    // const localStoreageRef = localStorage.getItem(spiritPet);
-    // if(localStoreageRef) {
-    //   setPets(JSON.parse(localStoreageRef));
-    // }
-
-    //const petTrackerRef = ref(database, `${spiritPet}/pets`);
-
-    // onValue(petTrackerRef, (snapshot) => {
-    //   const data = snapshot.val() || {}; 
-    //   console.log("Got the pets from the database", data);
-    //   setPets(data);
-    // });
-
-    return () => {}
-  }, [spiritPet]);
-
-  // Save pets data to localStorage whenever it changes
-  useEffect(() => {
-    if (spiritPet) {
-      localStorage.setItem(spiritPet, JSON.stringify(pets));
+    const localStoreageRef = localStorage.getItem(loginInfo);
+    if(localStoreageRef) {
+     
+      return JSON.parse(localStoreageRef);
+      
+    }else {
+      return {}
     }
-  }, [pets, spiritPet]);
+  }
+
+
+
+
+  // Fetch data and sync with Firebase when the component mounts
+  useEffect(() => {
+    if (!loginInfo) {
+      console.error("O wow you do not have a spirit animal");
+      return;
+    }
+  
+    // Retrieve pets from localStorage
+    const localStorageRef = localStorage.getItem(loginInfo);
+    if (localStorageRef) {
+      setcurrentPetInfo(JSON.parse(localStorageRef));
+    }
+
+    // Reference to the pets data in Firebase
+    const petsRef = ref(database, `${loginInfo}/pets`);
+
+    // Listen for changes in the pets data
+    onValue(petsRef, (snapshot) => {
+      const data = snapshot.val() || {};
+     // console.log("Fetched data from Firebase:", data);
+      setPets(data); // Update state with data from Firebase
+    });
+
+    
+    const userRef = ref(database, `${loginInfo}/userInfo`);
+    
+  
+      onValue(userRef, (snapshot) => {
+        const data = snapshot.val() || {};
+        // Listen for changes in the name data
+        setLoginName(data.name);      
+      })
+  
+    
+
+    // Cleanup function to remove the Firebase listener when the component unmounts
+    return () => {
+      // No explicit cleanup needed for onValue, but you can use `off()` if necessary
+    };
+  }, [loginInfo]);
+
+
+
+
+  // Save currentPetInfo data to localStorage whenever it changes
+  useEffect(() => {
+    if (loginInfo) {
+      localStorage.setItem(loginInfo, JSON.stringify(currentPetInfo));
+    }
+  }, [currentPetInfo, loginInfo]);
 
   /**
    * Function to update the pets list. It accepts the 
@@ -54,23 +107,37 @@ function App() {
   function updatePets ( petId, newPet ) {
     //copy list
     const newPets = {...pets};
-    console.log(newPets);
+    //console.log(newPets);
     newPets[petId] = newPet;
     setPets(newPets);
     setcurrentPetInfo(newPets[petId]);
-  }
+
+    // Save the new pets data to Firebase
+    const petsRef = ref(database, `${loginInfo}/pets`);
+    set(petsRef, newPets)
+      .then(() => console.log("pet added to Firebase:", newPet))
+      .catch((error) => console.error("Error adding pet to Firebase:", error));
+  };
+  
 
     /**
    * Function to delete a pet from the pets list
    * using a key value pair that will use the pet ID as the key in the 
    * pet list.
    */
-    function deleteAPet(petId) {
+    function deleteAPet(petId) { 
+      const petRemoved = pets[petId];
       setcurrentPetInfo(null);
       const newPets = {...pets};
       newPets[petId] = null;
       delete newPets[petId];
       setPets(newPets);
+
+         // Save the updated pets data to Firebase
+      const petsRef = ref(database, `${loginInfo}/pets`);
+      set(petsRef, newPets)
+        .then(() => console.log("pet removed from Firebase: ", petRemoved))
+        .catch((error) => console.error("Error adding pet to Firebase:", error));
       
     }
 
@@ -80,18 +147,45 @@ function App() {
    */
   function currentPet (id) {
     setcurrentPetInfo(pets[id]);
+    localStorage.setItem(loginInfo, pets[id]);
   }
 
+  /**
+   * function to eaily add some pets
+   */
   function fakePets(){
     const newPets = createPets();
     setPets(newPets);
-    localStorage.setItem(spiritPet, JSON.stringify(pets));
+
+     // Save the new pets data to Firebase
+     const petsRef = ref(database, `${loginInfo}/pets`);
+     set(petsRef, newPets)
+       .then(() => console.log("pet added fake pets to Firebase:"))
+       .catch((error) => console.error("Error adding pet to Firebase:", error));
   }
 
+  
+    const logout = async () => {
+      console.log("Logging out!");
+      await signOut(getAuth(fbApp));
+      localStorage.removeItem("uid"); // Remove the uid from local storage
+      setLoginName("");
+      setcurrentPetInfo({});
+      setPets({});
+      navigate(`/`);
 
+      //remove the user from the local storage
+      localStorage.removeItem(loginInfo);
+      
+    };
+  
+
+  
   return (
     <>
-    <Header />
+    <Header
+    loginName={loginName}
+    logout={logout} />
     <main>
     <PetList 
       currentPet={currentPet}
