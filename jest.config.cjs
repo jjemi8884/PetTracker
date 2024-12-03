@@ -4,4 +4,6 @@ module.exports = {
      },
        moduleFileExtensions: ['js', 'jsx'], // Recognize .js and .jsx extensions
        testEnvironment: 'jest-environment-jsdom', // Use jsdom for DOM testing
+
+      
      };

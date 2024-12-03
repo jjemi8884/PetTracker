@@ -77,7 +77,11 @@ function App() {
       onValue(userRef, (snapshot) => {
         const data = snapshot.val() || {};
         // Listen for changes in the name data
-        setLoginName(data.name);      
+        setLoginName(data.name);    
+        if(data.isAdmin){
+          console.log("we have an admin here, watch out!");
+          window.alert("You are a admin, woop-Dee-Do! We have Zero turst here so you can do nothing!");
+        };  
       })
   
     
