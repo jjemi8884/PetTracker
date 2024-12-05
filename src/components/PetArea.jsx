@@ -65,7 +65,7 @@ export default function PetArea ({pets, currentPetInfo, updatePets, deleteAPet, 
         <>
         <div className="petAreaForm">
             <div className="buttonArea">
-                <button onClick={addAPet} value="Add a new Pet">Add Compainion</button>
+                <button onClick={addAPet} value="Add a new Pet">Add Companion</button>
                 <button onClick={updateAPet} value="Update your Pet">Update Companion</button>
                 <button onClick={deletePet} value="Remove Pet Information from System">Delete Companion</button>
                 <button onClick={fakePetsGen}>Generate Some Fake Pets</button>
